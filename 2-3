@@ -1,0 +1,200 @@
+1.	Написати програму, що реалізує пошук НСД методом 1 і 2, а також методом Евкліда для двох чисел. Числа вибирати восьми- або дев’ятицифровими.
+Визначити середній час виконання алгоритмів шляхом автоматичного запуску алгоритмів по 10-20 раз.
+
+1 спосіб
+
+#include <iostream>
+#include<ctime>
+
+using namespace std;
+
+int main()
+{
+    int t = time(NULL);
+
+    srand(time(NULL));
+    long int a = rand() % 9 + 1;
+    long int b = rand() % 9 + 1;
+    bool res = false;
+
+    for (int j = 0; j < 10; j++)
+    {
+        cout << "\n";
+        a = rand() % 9 + 1;
+        b = rand() % 9 + 1;
+        bool res = false;
+
+        for (int k = 0; k < 8; k++)
+        {
+            a = a * 10 + rand() % 10;
+            b = b * 10 + rand() % 10;
+
+            if (a == b)
+            {
+                cout << "a=" << a << "b=" << b << "NDs=" << a << "\n";
+                bool res = true;
+            }
+            else if (a % b == 0)
+            {
+                cout << "a=" << a << "b=" << b << "NDs=" << b << "\n";
+                bool res = true;
+            }
+            for (long i = a; i > 0; i--)
+            {
+                if (res)
+                {
+                    continue;
+                }
+                if (a % i == 0 && b % i == 0)
+                {
+                    cout << "a=" << a << "b=" << b << "NDs=" << i << "\n";
+                    bool res = true;
+                    break;
+                }
+            }
+
+
+
+        }
+    }
+    cout << "\n time=" << (time(NULL) - t);
+}
+2 спосіб
+#include <iostream>
+#include<ctime>
+
+using namespace std;
+
+int main()
+{
+    int t = time(NULL);
+    srand(time(NULL));
+    long int a = rand() % 14 + 1; // збільшено з 9 до 14 
+    long int b = rand() % 14 + 1; ; // збільшено з 9 до 14 
+    for (int j = 0; j < 15; j++); // збільшено з 10 до 15 
+    {
+        a = rand() % 14 + 1; // збільшено з 9 до 14 
+        b = rand() % 14 + 1; // збільшено з 9 до 14 
+        bool res = false;
+        for (int k = 0; k < 13; k++) // збільшено з 8 до 13 
+        {
+            cout << "\n";
+            a = a * 15 + rand() % 15; // збільшено з 10 до 15 
+            b = b * 15 + rand() % 15; // збільшено з 10 до 15 
+            res = false;
+            if (a == b)
+            {
+                cout << "a=" << a << "b=" << b << " NDs=" << a;
+                res = true;
+            }
+            else if (a % b == 0)
+            {
+                cout << "a=" << a << "b=" << b << " NDs=" << b;
+                res = true;
+            }
+            for (long i = a; i > 0; i--)
+            {
+                if (res) continue;
+                if (a % i == 0 && b % i == 0)
+                {
+                    cout << "a=" << a << "b=" << b << " NDs=" << i;
+                    res = true;
+                    break;
+                }
+            }
+
+        }
+    }
+    cout << "\n time=" << (time(NULL) - t);
+}
+Алгоритм Евкліда
+#include <iostream>
+#include<ctime>
+#include<algorithm>
+
+using namespace std;
+
+int gcd(int a, int b) {
+    if (b == 0) return a;
+    else return gcd(b, a % b);
+}
+
+int main() {
+    int t = time(NULL);
+    srand(time(NULL));
+
+    int a, b;
+    cin >> a >> b;
+    cout << gcd(a, b);
+    return 0;
+
+    cout << "\n time=" << (time(NULL) - t);
+
+}
+2.	Написати програму, яка реалізує алгоритм Дейкстри. Відкомпілювати та відлагодити програму. Протестувати роботу програми використовуючи різні вхідні дані:
+ 
+За початкову точку вибрати вершину 3.
+#include<iostream>
+
+
+using namespace std;
+
+const int points = 6;
+int main()
+{
+	int graph[points][points] = {
+		{0, 10, 3, 3, 7, 1},
+		{10, 0, 13, 8, 13, 11},
+		{3, 13, 0, 6, 5, 4},
+		{3, 8, 6, 0, 5, 2},
+		{7, 13, 5, 5, 0, 6},
+		{1, 11, 4, 2, 6, 0}
+	};
+
+	int st; //старт
+
+	cout << "start point =";
+	cin >> st;
+
+	st = st - 1;
+
+	int dis[points]; //для визн. відстані
+	bool visit[points]; //для позн. відвіданих
+	int index; //індекс мін. відстані
+
+	//ініціалізація
+	for (int i = 0; i < points; i++) {
+		dis[i] = 65535;
+		visit[i] = false;
+	}
+	dis[st] = 0;
+
+	for (int j = 0; j < points - 1; j++)
+	{
+		int min = 65535;
+		for (int i = 0; i < points; i++) {
+
+			if (!visit[i] && dis[i] <= min) {
+				min = dis[i];
+				index = i;
+			}
+
+		}
+	
+	visit[index] = true;
+
+	for (int i = 0; i < points; i++) 
+	  {
+		if (!visit[i] && dis[index] + graph[index][i] < dis[i] && dis[index] != 65535 && graph[index][i]) 
+		{
+			dis[i] = dis[index] + graph[index][i];
+		}
+	  }
+    }
+	
+	cout << " from point " << st + 1 << "to other points are \n";
+	for (int i = 0; i < points; i++) 
+	{
+		cout << st + 1 << " --> " << i + 1 << " d= " << dis[i] << " \n";
+	}
+}
